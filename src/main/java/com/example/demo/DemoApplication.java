@@ -15,14 +15,7 @@ import java.io.IOException;
 public class DemoApplication {
 	public static void main(String[] args) {
 		ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
-		WebServer webServer = serverFactory.getWebServer(servletContext -> {
-			servletContext.addServlet("post", new HttpServlet() {
-				@Override
-				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-					super.service(req, resp);
-				}
-			});
-		});
+		WebServer webServer = serverFactory.getWebServer();
 		webServer.start();
 	}
 }
