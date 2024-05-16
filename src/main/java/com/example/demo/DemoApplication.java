@@ -10,6 +10,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -18,20 +19,29 @@ import java.io.IOException;
 public class DemoApplication {
 	public static void main(String[] args) {
 		ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
-		// 여러 개의 servlet이 있는 servletContext 생성
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
-			servletContext.addServlet("servlet", new HttpServlet() {
+			// 핸들러 의존하여 사용
+			UserController userController = new UserController();
+			PostController postController = new PostController();
+
+			servletContext.addServlet("frontController", new HttpServlet() {
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-					String name = req.getParameter("name");
-
-					// 응답 코드
-					resp.setStatus(HttpStatus.OK.value());
-					// 헤더 설정
-					resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
-					resp.getWriter().print("Hello " + name);
+					// 공통 로직
+					if (req.getRequestURL().equals("/signin") && req.getMethod().equals("POST")) {
+						// 로그인 로직
+						userController.signin();
+					} else if (req.getRequestURL().equals("/signUp") && req.getMethod().equals("POST")) {
+						// 회원가입 로직
+						userController.signup();
+					} else if (req.getRequestURL().equals("/") && req.getMethod().equals("POST")) {
+						// 게시글 작성 로직
+						postController.createPost();
+					} else {
+						// 에러 처리
+					}
 				}
-			}).addMapping("/*");
+			}).addMapping("/*");// 전체 url 매핑
 		});
 		webServer.start();
 	}
