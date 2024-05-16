@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,23 +20,29 @@ import java.io.IOException;
 public class DemoApplication {
 	public static void main(String[] args) {
 		ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
+		GenericApplicationContext context = new GenericApplicationContext();
+		context.registerBean(UserController.class);
+		context.registerBean(PostController.class);
+		context.refresh();
+
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
-			// 핸들러 의존하여 사용
-			UserController userController = new UserController();
-			PostController postController = new PostController();
+			// UserController userController = new UserController();
+			// PostController postController = new PostController();
 
 			servletContext.addServlet("frontController", new HttpServlet() {
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-					// 공통 로직
 					if (req.getRequestURL().equals("/signin") && req.getMethod().equals("POST")) {
 						// 로그인 로직
+						UserController userController = context.getBean(UserController.class);
 						userController.signin();
 					} else if (req.getRequestURL().equals("/signUp") && req.getMethod().equals("POST")) {
 						// 회원가입 로직
+						UserController userController = context.getBean(UserController.class);
 						userController.signup();
 					} else if (req.getRequestURL().equals("/") && req.getMethod().equals("POST")) {
 						// 게시글 작성 로직
+						PostController postController = context.getBean(PostController.class);
 						postController.createPost();
 					} else {
 						// 에러 처리
