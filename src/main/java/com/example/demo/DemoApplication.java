@@ -21,26 +21,16 @@ public class DemoApplication {
 	public static void main(String[] args) {
 		ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
 		GenericApplicationContext context = new GenericApplicationContext();
-		context.registerBean(UserController.class);
 		context.registerBean(PostController.class);
+		context.registerBean(PostService.class);// service 빈 추가
+		context.registerBean(PostRepository.class);// repository 빈 추가
 		context.refresh();
 
 		WebServer webServer = serverFactory.getWebServer(servletContext -> {
-			// UserController userController = new UserController();
-			// PostController postController = new PostController();
-
 			servletContext.addServlet("frontController", new HttpServlet() {
 				@Override
 				protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-					if (req.getRequestURL().equals("/signin") && req.getMethod().equals("POST")) {
-						// 로그인 로직
-						UserController userController = context.getBean(UserController.class);
-						userController.signin();
-					} else if (req.getRequestURL().equals("/signUp") && req.getMethod().equals("POST")) {
-						// 회원가입 로직
-						UserController userController = context.getBean(UserController.class);
-						userController.signup();
-					} else if (req.getRequestURL().equals("/") && req.getMethod().equals("POST")) {
+					if (req.getRequestURL().equals("/") && req.getMethod().equals("POST")) {
 						// 게시글 작성 로직
 						PostController postController = context.getBean(PostController.class);
 						postController.createPost();
