@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@ResponseBody
 @RequestMapping("/post")
 public class PostController {
     private final PostService postService;
@@ -18,6 +17,7 @@ public class PostController {
     }
 
     @GetMapping
+    @ResponseBody
     public String getPost(){
         return postService.getPost();
     }
