@@ -1,8 +1,13 @@
 package com.example.demo;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@ResponseBody
+@RequestMapping("/post")
 public class PostController {
     private final PostService postService;
 
@@ -12,7 +17,8 @@ public class PostController {
         this.postService = postService;
     }
 
-    public String createPost(){
-        return postService.createPost();
+    @GetMapping
+    public String getPost(){
+        return postService.getPost();
     }
 }

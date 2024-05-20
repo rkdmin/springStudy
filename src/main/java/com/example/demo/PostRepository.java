@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class PostRepository {
-    public String createPost() {
-        return null;
+    public String getPost() {
+        return "dsafd";
     }
 }

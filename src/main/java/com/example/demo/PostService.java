@@ -11,5 +11,5 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public String createPost(){ return  postRepository.createPost(); };
+    public String getPost(){ return  postRepository.getPost(); };
 }
