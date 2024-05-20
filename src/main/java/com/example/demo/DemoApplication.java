@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
@@ -10,16 +11,14 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-@Configuration// 빈 등록하기 위해 사용 (*)
-@ComponentScan// 컴포넌트 스캔 (**)
+@Configuration
+@ComponentScan
 public class DemoApplication {
-	// 톰켓 빈 생성 (***)
 	@Bean
 	public ServletWebServerFactory servletWebServerFactory(){
 		return new TomcatServletWebServerFactory();
 	}
 
-	// 디스패쳐 서블릿 빈 생성 (***)
  	@Bean
 	public DispatcherServlet dispatcherServlet(){
 		return new DispatcherServlet();
@@ -27,28 +26,7 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		// (****) 로직을 run으로 빼줌
-		run(DemoApplication.class);
-	}
-
-	private static void run(Class<?> applicationClass) {
-		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext() {
-			@Override
-			protected void onRefresh() {
-				super.onRefresh();
-
-				// 톰켓, 디스패쳐 서블릿 빈 사용 (*****)
-				ServletWebServerFactory serverFactory = this.getBean(ServletWebServerFactory.class);
-				DispatcherServlet dispatcherServlet = this.getBean(DispatcherServlet.class);
-
-				WebServer webServer = serverFactory.getWebServer(servletContext -> {
-					servletContext.addServlet("dispatcherServlet", dispatcherServlet)
-							.addMapping("/*");
-				});
-				webServer.start();
-			}
-		};
-
-		context.register(applicationClass);
-		context.refresh();
+		SpringApplication.run(DemoApplication.class, args);
 	}
 }
+
