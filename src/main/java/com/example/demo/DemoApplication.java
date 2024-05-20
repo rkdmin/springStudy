@@ -11,21 +11,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-@Configuration
-@ComponentScan
+@MySpringBootAnnotation// 변경 완료
 public class DemoApplication {
-	@Bean
-	public ServletWebServerFactory servletWebServerFactory(){
-		return new TomcatServletWebServerFactory();
-	}
-
- 	@Bean
-	public DispatcherServlet dispatcherServlet(){
-		return new DispatcherServlet();
-	}
-
 	public static void main(String[] args) {
-		// (****) 로직을 run으로 빼줌
 		SpringApplication.run(DemoApplication.class, args);
 	}
 }
